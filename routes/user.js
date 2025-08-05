@@ -1,16 +1,25 @@
 const {Router, response}= require('express');
 const router = Router();
 const User = require('../models/user');
-const {handlesignUp} = require('../controllers/user');
-router.get('/signin',(request,response)=>{
+const {handlesignUp,handleSignIn} = require('../controllers/user');
+
+
+//User SignIn routes
+router
+.route("/signin")
+.get((request,response)=>{
     return response.render('signin');
-});
+})
+.post(handleSignIn);
 
-router.get('/signup',(request,response)=>{
+
+//User SignUp routes
+router
+.route("/signup")
+.get((request,response)=>{
    return  response.render('signup');
-});
-
-router.post('/signup',handlesignUp);
+})
+.post(handlesignUp);
 
 
 

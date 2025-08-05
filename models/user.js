@@ -14,7 +14,6 @@ const userSchema = new Schema({
         },
         salt : {
             type : String,
-            required : true,
         },
         password : {
             type : String,
@@ -29,7 +28,7 @@ const userSchema = new Schema({
             enum : ['USER','ADMIN'],
             default : 'USER',
         },
-},{timeseries:true});
+},{timestamps:true});
 
 userSchema.pre('save',function(next){
     const user = this;
@@ -47,6 +46,22 @@ userSchema.pre('save',function(next){
 
     next();
 });
+
+userSchema.static("matchPassword",async function(email,password){
+    const user = await this.findOne({email});
+    if(!user) throw new Error('User not found');
+
+    const salt = user.salt;
+    const hashedPassword = user.password;
+
+    const userProvidedHash = createHmac('sha256',salt)
+                            .update(password)
+                            .digest('hex');
+
+    if(hashedPassword !== userProvidedHash )  throw new Error('Incorrect Password!');
+
+    return {...user.toObject(),password:undefined,salt:undefined};
+})
 
 const User = model('user',userSchema);
 
