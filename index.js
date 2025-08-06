@@ -5,6 +5,7 @@ const userRouter = require('./routes/user');
 const blogRouter = require('./routes/blog');
 const PORT = 4000;
 const cookieParser = require('cookie-parser');
+const Blog = require('./models/blog')
 
 const mongoose = require("mongoose");
 const { checkForAuthenticatonCookie } = require('./middlewares/authentication');
@@ -16,16 +17,18 @@ mongoose.connect("mongodb://localhost:27017/blogapp")
 
 app.set('view engine','ejs');
 app.set('views',path.resolve('./views'));
-app.use(express.static('public'));
+app.use(express.static(path.resolve('./public')));
 
 
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
 app.use(checkForAuthenticatonCookie("cookie"));
 
-app.get('/',(request,response)=>{
+app.get('/',async(request,response)=>{
+   const allBlogs = await Blog.find({}).sort('-createdAt');
     response.render('home',{
         user: request.user,
+        blogs:allBlogs,
     });
 })
 
