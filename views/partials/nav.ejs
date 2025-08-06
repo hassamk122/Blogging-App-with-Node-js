@@ -17,8 +17,9 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
+        <% if (locals.user) { %>
         <li class="nav-item">
-          <a class="nav-link" href="#">Add Blog</a>
+          <a class="nav-link" href="/blog/add-new">Add Blog</a>
         </li>
         <li class="nav-item dropdown">
           <a
@@ -28,18 +29,26 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            UserName
+            <%= locals.user.fullName %>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">LogOut</a></li>
+            <li><a class="dropdown-item" href="/user/logout">LogOut</a></li>
           </ul>
         </li>
+        <% } else{ %>
+        <li class="nav-item">
+          <a class="nav-link" href="/user/signup">Create Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user/signin">Signin</a>
+        </li>
+        <% } %>
       </ul>
     </div>
   </div>
 </nav>
 <% if (locals.error) { %>
-  <div class="contianer mt-4 mx-4">
-<div class="alert alert-danger" role="alert"><%= locals.error %></div>
+<div class="contianer mt-4 mx-4">
+  <div class="alert alert-danger" role="alert"><%= locals.error %></div>
 </div>
 <% } %>

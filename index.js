@@ -1,10 +1,13 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const userRouter = require('./routes/user')
+const userRouter = require('./routes/user');
+const blogRouter = require('./routes/blog');
 const PORT = 4000;
+const cookieParser = require('cookie-parser');
 
 const mongoose = require("mongoose");
+const { checkForAuthenticatonCookie } = require('./middlewares/authentication');
 
 mongoose.connect("mongodb://localhost:27017/blogapp")
 .then(()=> console.log("Connected to mongoDB"))
@@ -13,15 +16,21 @@ mongoose.connect("mongodb://localhost:27017/blogapp")
 
 app.set('view engine','ejs');
 app.set('views',path.resolve('./views'));
+app.use(express.static('public'));
 
 
 app.use(express.urlencoded({extended:false}));
+app.use(cookieParser());
+app.use(checkForAuthenticatonCookie("cookie"));
 
-app.get('/',(req,res)=>{
-    res.render('home');
+app.get('/',(request,response)=>{
+    response.render('home',{
+        user: request.user,
+    });
 })
 
 app.use('/user',userRouter);
+app.use('/blog',blogRouter);
 
 app.listen(PORT,()=>{
     console.log(`App Listening at PORT : ${PORT}`)

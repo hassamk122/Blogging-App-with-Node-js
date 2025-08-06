@@ -21,6 +21,11 @@ router
 })
 .post(handlesignUp);
 
+router
+.route('/logout')
+.get((request,response)=>{
+    return response.clearCookie("cookie").redirect('/');
+})
 
 
 module.exports = router;
