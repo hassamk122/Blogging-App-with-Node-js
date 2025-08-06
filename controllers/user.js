@@ -10,13 +10,18 @@ async function handlesignUp(request, response) {
   return response.redirect("/");
 }
 
-function handleSignIn(request, response) {
-  const { email, password } = request.body;
-  const user = User.matchPassword(email, password);
+async function handleSignIn(request, response) {
+    const { email, password } = request.body;
+  try{
+  const token =await User.matchPasswordAndGenerateToken(email, password);
+  console.log("token",token);
+  return response.cookie('cookie',token).redirect("/");
+  }catch(error){
+    return response.render('signin',{
+      error : 'Incorrect email or password!'
+    });
+  }
 
-  console.log("User", user);
-
-  return response.redirect("/");
 }
 
 module.exports = {
