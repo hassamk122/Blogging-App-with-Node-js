@@ -7,7 +7,7 @@ async function handlesignUp(request, response) {
     email,
     password,
   });
-  return response.redirect("/");
+  return response.redirect("/signin");
 }
 
 async function handleSignIn(request, response) {
